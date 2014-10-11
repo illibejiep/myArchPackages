@@ -46,7 +46,6 @@ md5sums=(
          'b01be5f816988fcee7e78225836e5e27'
          '740ec5fe2ecfd9d7febd4081c90ec65b'
          '07c4e412909ac65a44ec90e7a2c4bade'
-         '07ca7da608553b4cb92797e655eb94f1'
 )
 
 build() {
@@ -138,13 +137,7 @@ build() {
 	PEAR_INSTALLDIR=/usr/share/pear
 	export PEAR_INSTALLDIR
 
-	# fix the suhosin patch
-	patch -i ${srcdir}/suhosin.patch
-
 	cd ${srcdir}/${pkgbase}-${pkgver}
-
-	# apply suhosin patch
-	patch -F3 -p1 -i ${srcdir}/suhosin-patch-${_suhosinver}.patch
 
 	# adjust paths
 	patch -p0 -i ${srcdir}/php.ini.patch
