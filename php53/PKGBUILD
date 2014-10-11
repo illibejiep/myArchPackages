@@ -37,13 +37,15 @@ source=(
 	'apache.conf' 
 	'rc.d.php-fpm' 
         'logrotate.d.php-fpm'
+	'freetype.patch'
 )
 md5sums=(
 	'ebfa96ea636b2a7ece71e78ad116a338'
-         'ffc338e8ce2a990f6f2a486355bbab65'
-         'dec2cbaad64e3abf4f0ec70e1de4e8e9'
-         'b01be5f816988fcee7e78225836e5e27'
-         '07c4e412909ac65a44ec90e7a2c4bade'
+        'ffc338e8ce2a990f6f2a486355bbab65'
+        'dec2cbaad64e3abf4f0ec70e1de4e8e9'
+        'b01be5f816988fcee7e78225836e5e27'
+        '07c4e412909ac65a44ec90e7a2c4bade'
+	'bd375f73f6f89dcd53b8cce8015d13b3'
 )
 
 build() {
@@ -88,9 +90,8 @@ build() {
 		--enable-zip=shared \
 		--with-bz2=shared \
 		--with-curl=shared \
-		--with-db4=/usr \
 		--with-enchant=shared,/usr \
-		--with-freetype-dir=shared,/usr \
+		--with-freetype-dir=/usr/include/freetype2/ \
 		--with-gd=shared \
 		--with-gdbm=shared \
 		--with-gettext=shared \
@@ -139,6 +140,9 @@ build() {
 
 	# adjust paths
 	patch -p0 -i ${srcdir}/php.ini.patch
+
+	# freetype.h path fix
+        patch -p0 -i ${srcdir}/freetype.patch
 
 	# php
 	mkdir ${srcdir}/build-php
