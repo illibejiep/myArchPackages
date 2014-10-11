@@ -36,7 +36,6 @@ source=(
         'php.ini.patch' 
 	'apache.conf' 
 	'rc.d.php-fpm' 
-	'php-fpm.conf.in.patch'
         'logrotate.d.php-fpm'
 )
 md5sums=(
@@ -44,7 +43,6 @@ md5sums=(
          'ffc338e8ce2a990f6f2a486355bbab65'
          'dec2cbaad64e3abf4f0ec70e1de4e8e9'
          'b01be5f816988fcee7e78225836e5e27'
-         '740ec5fe2ecfd9d7febd4081c90ec65b'
          '07c4e412909ac65a44ec90e7a2c4bade'
 )
 
@@ -141,7 +139,6 @@ build() {
 
 	# adjust paths
 	patch -p0 -i ${srcdir}/php.ini.patch
-	patch -p0 -i ${srcdir}/php-fpm.conf.in.patch
 
 	# php
 	mkdir ${srcdir}/build-php
