@@ -155,7 +155,6 @@ build() {
 		--with-readline \
 		--enable-pcntl \
 		${phpextensions}
-	exit
 	make
 
 	# cgi and fcgi
