@@ -134,9 +134,7 @@ build() {
 	PEAR_INSTALLDIR=/usr/share/pear
 	export PEAR_INSTALLDIR
 
-	export CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
-	export CFLAGS="${CFLAGS} ${CPPFLAGS}"
-	unset CPPFLAGS
+	export CPPFLAGS="${CPPFLAGS} -O2"
 
 	cd ${srcdir}/${pkgbase}-${pkgver}
 
