@@ -19,7 +19,7 @@ post_install() {
 
 	echo "PHPENV_USER=$PHPENV_USER" >> /etc/environment
 
-	mkdir -p /home/$PHPENV_USER/.phpenv
+	mkdir -p /home/$PHPENV_USER/
 	mv /tmp/phpenv_pkg /home/$PHPENV_USER/.phpenv
 	cd /home/$PHPENV_USER
 
