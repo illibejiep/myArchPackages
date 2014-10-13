@@ -1,0 +1,37 @@
+# Maintainer: Vasiliy Lapin <profet@yandex.ru>
+pkgname=phpenv
+pkgver=master
+pkgrel=1
+pkgdesc="phpenv"
+arch=('i686' 'x86_64')
+url="https://github.com/phpenv/phpenv"
+license=('GPL')
+install='phpenv.install'
+source=(
+	'https://github.com/phpenv/phpenv/archive/master.tar.gz'
+)
+makedepends=(
+)
+noextract=()
+md5sums=(
+	'SKIP'
+	)
+validpgpkeys=()
+
+prepare() {
+	cd "$pkgname-$pkgver"
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+#	make -k check
+}
+
+package() {
+	mkdir ${pkgdir}/tmp
+	cp -r ${srcdir}/phpenv-master ${pkgdir}/tmp/phpenv_pkg
+}
