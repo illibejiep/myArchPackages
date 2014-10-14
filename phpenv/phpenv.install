@@ -19,26 +19,46 @@ post_install() {
 
 	echo "PHPENV_USER=$PHPENV_USER" >> /etc/environment
 
-	mkdir -p /home/$PHPENV_USER/
-	mv /tmp/phpenv_pkg /home/$PHPENV_USER/.phpenv
-	cd /home/$PHPENV_USER
+	if [ $PHPENV_USER != "root" ]; then
+		ENV_DIR="/home/${PHPENV_USER}"
+	else
+		ENV_DIR="/root"
+	fi
 
-	echo '# v v v it is forbidden to modify v v v' >> .bash_profile
-	echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> .bash_profile
-	echo 'eval "$(phpenv init -)"' >> .bash_profile
-	echo '# ^ ^ ^ it is forbidden to modify ^ ^ ^' >> .bash_profile
+	mkdir -p $ENV_DIR
+	mv /tmp/phpenv_pkg $ENV_DIR/.phpenv
+	chown -R $PHPENV_USER:$PHPENV_USER $ENV_DIR/.phpenv
+
+	cd $ENV_DIR
+	echo "# v v v it is forbidden to modify v v v
+export PATH=\"\$HOME/.phpenv/bin:\$PATH\"  
+eval \"\$(phpenv init -)\"                
+# ^ ^ ^ it is forbidden to modify ^ ^ ^
+$(cat .bash_profile)
+" > .bash_profile
+
+	su -c "${ENV_DIR}/.phpenv/bin/phpenv rehash" $PHPENV_USER
 }
 
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 pre_upgrade() {
 	echo "pre_upgrade"
+
 }
 
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
 	echo "post_upgrade"
+
+	PHPENV_USER=root
+	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
+	
+	mv /tmp/phpenv_pkg $ENV_DIR/.phpenv
+	cd /home/$PHPENV_USER/
+	rm -r .phpenv
+
 }
 
 ## arg 1:  the old package version
