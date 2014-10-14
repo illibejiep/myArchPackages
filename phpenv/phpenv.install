@@ -56,9 +56,6 @@ post_upgrade() {
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
 	
 	mv /tmp/phpenv_pkg $ENV_DIR/.phpenv
-	cd /home/$PHPENV_USER/
-	rm -r .phpenv
-
 }
 
 ## arg 1:  the old package version
