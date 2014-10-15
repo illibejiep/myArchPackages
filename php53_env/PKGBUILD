@@ -38,16 +38,12 @@ source=(
 	"${pkgbase}-${pkgver}.tar.gz::http://ru2.php.net/get/${pkgbase}-${pkgver}.tar.gz/from/this/mirror"
     'php.ini.patch' 
 	'apache.conf' 
-	'rc.d.php-fpm' 
-    'logrotate.d.php-fpm'
 	'freetype.patch'
 )
 md5sums=(
 	'ebfa96ea636b2a7ece71e78ad116a338'
     'ffc338e8ce2a990f6f2a486355bbab65'
     'dec2cbaad64e3abf4f0ec70e1de4e8e9'
-    'b01be5f816988fcee7e78225836e5e27'
-    '07c4e412909ac65a44ec90e7a2c4bade'
 	'bd375f73f6f89dcd53b8cce8015d13b3'
 )
 
