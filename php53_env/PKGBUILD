@@ -2,31 +2,35 @@
 # Maintainer: Pierre Schmitz <pierre@archlinux.de>
 
 pkgbase=php
-pkgname=('php'
-         'php-cgi'
-         'php-apache'
-         'php-fpm'
-         'php-embed'
-         'php-pear'
-         'php-enchant'
-         'php-gd'
-         'php-intl'
-         'php-ldap'
-         'php-mcrypt'
-         'php-mssql'
-         'php-odbc'
-         'php-pgsql'
-         'php-pspell'
-         'php-snmp'
-         'php-sqlite'
-         'php-tidy'
-         'php-xsl')
 pkgver=5.3.29
+pkgname=(
+	'php5.3.29_env'
+	'php5.3.29_env-cgi'
+	'php5.3.29_env-apache'
+	'php5.3.29_env-fpm'
+	'php5.3.29_env-embed'
+	'php5.3.29_env-pear'
+	'php5.3.29_env-enchant'
+	'php5.3.29_env-gd'
+	'php5.3.29_env-intl'
+	'php5.3.29_env-ldap'
+	'php5.3.29_env-mcrypt'
+	'php5.3.29_env-mssql'
+	'php5.3.29_env-odbc'
+	'php5.3.29_env-pgsql'
+	'php5.3.29_env-pspell'
+	'php5.3.29_env-snmp'
+	'php5.3.29_env-sqlite'
+	'php5.3.29_env-tidy'
+	'php5.3.29_env-xsl'
+)
+PHPENV="/tmp/php${pkgver}_env"
+install='php5.3.29_env.install'
 pkgrel=1
 arch=('i686' 'x86_64')
 license=('PHP')
 url='http://www.php.net'
-makedepends=('apache' 'imap' 'postgresql-libs' 'libldap' 'postfix'
+makedepends=('phpenv' 'apache' 'imap' 'postgresql-libs' 'libldap' 'postfix'
              'sqlite' 'unixodbc' 'net-snmp' 'libzip' 'enchant' 'file' 'freetds'
              'libmcrypt' 'tidyhtml' 'aspell' 'libltdl' 'libpng' 'libjpeg' 'icu'
              'curl' 'libxslt' 'openssl' 'bzip2' 'db' 'gmp' 'freetype2')
@@ -49,18 +53,18 @@ md5sums=(
 
 build() {
 	phpconfig="--srcdir=../${pkgbase}-${pkgver} \
-		--prefix=/usr \
-		--sysconfdir=/etc/php \
-		--localstatedir=/var \
+		--prefix=$PHPENV \
+		--sysconfdir=$PHPENV/etc/php \
+		--localstatedir=$PHPENV/var \
 		--with-layout=GNU \
-		--with-config-file-path=/etc/php \
-		--with-config-file-scan-dir=/etc/php/conf.d \
+		--with-config-file-path=$PHPENV/etc/php \
+		--with-config-file-scan-dir=$PHPENV/etc/php/conf.d \
 		--enable-inline-optimization \
 		--disable-debug \
 		--disable-rpath \
 		--disable-static \
 		--enable-shared \
-		--mandir=/usr/share/man \
+		--mandir=$PHPENV/usr/share/man \
 		--without-pear \
 		"
 
@@ -129,9 +133,9 @@ build() {
 		--without-db3 \
 		"
 
-	EXTENSION_DIR=/usr/lib/php/modules
+	EXTENSION_DIR=$PHPENV/usr/lib/php/modules
 	export EXTENSION_DIR
-	PEAR_INSTALLDIR=/usr/share/pear
+	PEAR_INSTALLDIR=$PHPENV/usr/share/pear
 	export PEAR_INSTALLDIR
 
 	export CPPFLAGS="${CPPFLAGS} -O2"
@@ -159,13 +163,14 @@ build() {
 	# reuse the previous run; this will save us a lot of time
 	cp -a ${srcdir}/build-php ${srcdir}/build-cgi
 	cd ${srcdir}/build-cgi
+	# not on my watch
 	make clean
 	./configure ${phpconfig} \
 		--disable-cli \
 		--enable-cgi \
 		${phpextensions}
 	
-	make
+	# make
 
 	# apache
 	cp -a ${srcdir}/build-php ${srcdir}/build-apache
@@ -217,70 +222,61 @@ build() {
 # 	make test
 # }
 
-package_php() {
+package_php5.3.29_env() {
 	pkgdesc='An HTML-embedded scripting language'
 	depends=('pcre' 'libxml2' 'bzip2' 'curl')
-	replaces=('php-fileinfo' 'php-gmp' 'php-curl')
-	provides=('php-fileinfo' 'php-gmp' 'php-curl')
-	conflicts=('php-fileinfo' 'php-gmp' 'php-curl')
-	backup=('etc/php/php.ini')
 
 	cd ${srcdir}/build-php
 	make -j1 INSTALL_ROOT=${pkgdir} install
-	install -d -m755 ${pkgdir}/usr/share/pear
+	install -d -m755 ${pkgdir}${PHPENV}/usr/share/pear
 	# install php.ini
-	install -D -m644 ${srcdir}/${pkgbase}-${pkgver}/php.ini-production ${pkgdir}/etc/php/php.ini
-	install -d -m755 ${pkgdir}/etc/php/conf.d/
+	install -D -m644 ${srcdir}/${pkgbase}-${pkgver}/php.ini-production ${pkgdir}${PHPENV}/etc/php/php.ini
+	install -d -m755 ${pkgdir}${PHPENV}/etc/php/conf.d/
 
 	# remove static modules
-	rm -f ${pkgdir}/usr/lib/php/modules/*.a
+	rm -f ${pkgdir}${PHPENV}/usr/lib/php/modules/*.a
 	# remove modules provided by sub packages
-	rm -f ${pkgdir}/usr/lib/php/modules/{enchant,gd,intl,ldap,mcrypt,mssql,odbc,pdo_odbc,pgsql,pdo_pgsql,pspell,snmp,sqlite3,pdo_sqlite,tidy,xsl}.so
+	rm -f ${pkgdir}${PHPENV}/usr/lib/php/modules/{enchant,gd,intl,ldap,mcrypt,mssql,odbc,pdo_odbc,pgsql,pdo_pgsql,pspell,snmp,sqlite3,pdo_sqlite,tidy,xsl}.so
 	# remove empty directory
-	rmdir ${pkgdir}/usr/include/php/include
+	rm -rf ${pkgdir}${PHPENV}/usr/include/php/include
 }
 
-package_php-cgi() {
+package_php5.3.29_env-cgi() {
 	pkgdesc='CGI and FCGI SAPI for PHP'
-	depends=('php')
+	depends=('php5.3.29_env')
 
-	install -D -m755 ${srcdir}/build-cgi/sapi/cgi/php-cgi ${pkgdir}/usr/bin/php-cgi
+	install -D -m755 ${srcdir}/build-cgi/sapi/cgi/php-cgi ${pkgdir}${PHPENV}/usr/bin/php-cgi
 }
 
-package_php-apache() {
+package_php5.3.29_env-apache() {
 	pkgdesc='Apache SAPI for PHP'
-	depends=('php' 'apache')
-	backup=('etc/httpd/conf/extra/php5_module.conf')
+	depends=('php5.3.29_env' 'apache')
 
-	install -D -m755 ${srcdir}/build-apache/libs/libphp5.so ${pkgdir}/usr/lib/httpd/modules/libphp5.so
-	install -D -m644 ${srcdir}/apache.conf ${pkgdir}/etc/httpd/conf/extra/php5_module.conf
+	install -D -m755 ${srcdir}/build-apache/libs/libphp5.so ${pkgdir}${PHPENV}/usr/lib/httpd/modules/libphp5.so
+	install -D -m644 ${srcdir}/apache.conf ${pkgdir}${PHPENV}/etc/httpd/conf/extra/php5_module.conf
 }
 
-package_php-fpm() {
+package_php5.3.29_env-fpm() {
 	pkgdesc='FastCGI Process Manager for PHP'
-	depends=('php')
-	backup=('etc/php/php-fpm.conf')
+	depends=('php5.3.29_env')
 
-	install -D -m755 ${srcdir}/build-fpm/sapi/fpm/php-fpm ${pkgdir}/usr/sbin/php-fpm
-	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.8 ${pkgdir}/usr/share/man/man8/php-fpm.8
-	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.conf ${pkgdir}/etc/php/php-fpm.conf
-	install -D -m755 ${srcdir}/rc.d.php-fpm ${pkgdir}/etc/rc.d/php-fpm
-	install -D -m644 ${srcdir}/logrotate.d.php-fpm ${pkgdir}/etc/logrotate.d/php-fpm
-	install -d -m755 ${pkgdir}/etc/php/fpm.d
+	install -D -m755 ${srcdir}/build-fpm/sapi/fpm/php-fpm ${pkgdir}${PHPENV}/usr/sbin/php-fpm
+	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.8 ${pkgdir}${PHPENV}/usr/share/man/man8/php-fpm.8
+	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.conf ${pkgdir}${PHPENV}/etc/php/php-fpm.conf
+	install -d -m755 ${pkgdir}${PHPENV}/etc/php/fpm.d
 }
 
-package_php-embed() {
+package_php5.3.29_env-embed() {
 	pkgdesc='Embed SAPI for PHP'
-	depends=('php')
+	depends=('php5.3.29_env')
 
-	install -D -m755 ${srcdir}/build-embed/libs/libphp5.so ${pkgdir}/usr/lib/libphp5.so
-	install -D -m644 ${srcdir}/${pkgbase}-${pkgver}/sapi/embed/php_embed.h ${pkgdir}/usr/include/php/sapi/embed/php_embed.h
+	install -D -m755 ${srcdir}/build-embed/libs/libphp5.so ${pkgdir}${PHPENV}/usr/lib/libphp5.so
+	install -D -m644 ${srcdir}/${pkgbase}-${pkgver}/sapi/embed/php_embed.h ${pkgdir}${PHPENV}/usr/include/php/sapi/embed/php_embed.h
 }
 
-package_php-pear() {
+package_php5.3.29_env-pear() {
 	pkgdesc='PHP Extension and Application Repository'
-	depends=('php')
-	backup=('etc/php/pear.conf')
+	depends=('php5.3.29_env')
 
 	cd ${srcdir}/build-pear
 	make -j1 install-pear INSTALL_ROOT=${pkgdir}
@@ -290,83 +286,83 @@ package_php-pear() {
 	done < <(find ${pkgdir} -name '.*')
 }
 
-package_php-enchant() {
-	depends=('php' 'enchant')
+package_php5.3.29_env-enchant() {
+	depends=('php5.3.29_env' 'enchant')
 	pkgdesc='enchant module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/enchant.so ${pkgdir}/usr/lib/php/modules/enchant.so
+	install -D -m755 ${srcdir}/build-php/modules/enchant.so ${pkgdir}${PHPENV}/usr/lib/php/modules/enchant.so
 }
 
-package_php-gd() {
-	depends=('php' 'libpng' 'libjpeg' 'freetype2')
+package_php5.3.29_env-gd() {
+	depends=('php5.3.29_env' 'libpng' 'libjpeg' 'freetype2')
 	pkgdesc='gd module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/gd.so ${pkgdir}/usr/lib/php/modules/gd.so
+	install -D -m755 ${srcdir}/build-php/modules/gd.so ${pkgdir}${PHPENV}/usr/lib/php/modules/gd.so
 }
 
-package_php-intl() {
-	depends=('php' 'icu')
+package_php5.3.29_env-intl() {
+	depends=('php5.3.29_env' 'icu')
 	pkgdesc='intl module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/intl.so ${pkgdir}/usr/lib/php/modules/intl.so
+	install -D -m755 ${srcdir}/build-php/modules/intl.so ${pkgdir}${PHPENV}/usr/lib/php/modules/intl.so
 }
 
-package_php-ldap() {
-	depends=('php' 'libldap')
+package_php5.3.29_env-ldap() {
+	depends=('php5.3.29_env' 'libldap')
 	pkgdesc='ldap module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/ldap.so ${pkgdir}/usr/lib/php/modules/ldap.so
+	install -D -m755 ${srcdir}/build-php/modules/ldap.so ${pkgdir}${PHPENV}/usr/lib/php/modules/ldap.so
 }
 
-package_php-mcrypt() {
+package_php5.3.29_env-mcrypt() {
 	depends=('php' 'libmcrypt' 'libltdl')
 	pkgdesc='mcrypt module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/mcrypt.so ${pkgdir}/usr/lib/php/modules/mcrypt.so
+	install -D -m755 ${srcdir}/build-php/modules/mcrypt.so ${pkgdir}${PHPENV}/usr/lib/php/modules/mcrypt.so
 }
 
-package_php-mssql() {
-	depends=('php' 'freetds')
+package_php5.3.29_env-mssql() {
+	depends=('php5.3.29_env' 'freetds')
 	pkgdesc='mssql module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/mssql.so ${pkgdir}/usr/lib/php/modules/mssql.so
+	install -D -m755 ${srcdir}/build-php/modules/mssql.so ${pkgdir}${PHPENV}/usr/lib/php/modules/mssql.so
 }
 
-package_php-odbc() {
-	depends=('php' 'unixodbc')
+package_php5.3.29_env-odbc() {
+	depends=('php5.3.29_env' 'unixodbc')
 	pkgdesc='ODBC modules for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/odbc.so ${pkgdir}/usr/lib/php/modules/odbc.so
-	install -D -m755 ${srcdir}/build-php/modules/pdo_odbc.so ${pkgdir}/usr/lib/php/modules/pdo_odbc.so
+	install -D -m755 ${srcdir}/build-php/modules/odbc.so ${pkgdir}${PHPENV}/usr/lib/php/modules/odbc.so
+	install -D -m755 ${srcdir}/build-php/modules/pdo_odbc.so ${pkgdir}${PHPENV}/usr/lib/php/modules/pdo_odbc.so
 }
 
-package_php-pgsql() {
-	depends=('php' 'postgresql-libs')
+package_php5.3.29_env-pgsql() {
+	depends=('php5.3.29_env' 'postgresql-libs')
 	pkgdesc='PostgreSQL modules for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/pgsql.so ${pkgdir}/usr/lib/php/modules/pgsql.so
-	install -D -m755 ${srcdir}/build-php/modules/pdo_pgsql.so ${pkgdir}/usr/lib/php/modules/pdo_pgsql.so
+	install -D -m755 ${srcdir}/build-php/modules/pgsql.so ${pkgdir}${PHPENV}/usr/lib/php/modules/pgsql.so
+	install -D -m755 ${srcdir}/build-php/modules/pdo_pgsql.so ${pkgdir}${PHPENV}/usr/lib/php/modules/pdo_pgsql.so
 }
 
-package_php-pspell() {
-	depends=('php' 'aspell')
+package_php5.3.29_env-pspell() {
+	depends=('php5.3.29_env' 'aspell')
 	pkgdesc='pspell module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/pspell.so ${pkgdir}/usr/lib/php/modules/pspell.so
+	install -D -m755 ${srcdir}/build-php/modules/pspell.so ${pkgdir}${PHPENV}/usr/lib/php/modules/pspell.so
 }
 
-package_php-snmp() {
-	depends=('php' 'net-snmp')
+package_php5.3.29_env-snmp() {
+	depends=('php5.3.29_env' 'net-snmp')
 	pkgdesc='snmp module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/snmp.so ${pkgdir}/usr/lib/php/modules/snmp.so
+	install -D -m755 ${srcdir}/build-php/modules/snmp.so ${pkgdir}${PHPENV}/usr/lib/php/modules/snmp.so
 }
 
-package_php-sqlite() {
-	depends=('php' 'sqlite')
+package_php5.3.29_env-sqlite() {
+	depends=('php5.3.29_env' 'sqlite')
 	pkgdesc='sqlite module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/sqlite3.so ${pkgdir}/usr/lib/php/modules/sqlite3.so
-	install -D -m755 ${srcdir}/build-php/modules/pdo_sqlite.so ${pkgdir}/usr/lib/php/modules/pdo_sqlite.so
+	install -D -m755 ${srcdir}/build-php/modules/sqlite3.so ${pkgdir}${PHPENV}/usr/lib/php/modules/sqlite3.so
+	install -D -m755 ${srcdir}/build-php/modules/pdo_sqlite.so ${pkgdir}${PHPENV}/usr/lib/php/modules/pdo_sqlite.so
 }
 
-package_php-tidy() {
-	depends=('php' 'tidyhtml')
+package_php5.3.29_env-tidy() {
+	depends=('php5.3.29_env' 'tidyhtml')
 	pkgdesc='tidy module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/tidy.so ${pkgdir}/usr/lib/php/modules/tidy.so
+	install -D -m755 ${srcdir}/build-php/modules/tidy.so ${pkgdir}${PHPENV}/usr/lib/php/modules/tidy.so
 }
 
-package_php-xsl() {
-	depends=('php' 'libxslt')
+package_php5.3.29_env-xsl() {
+	depends=('php5.3.29_env' 'libxslt')
 	pkgdesc='xsl module for PHP'
-	install -D -m755 ${srcdir}/build-php/modules/xsl.so ${pkgdir}/usr/lib/php/modules/xsl.so
+	install -D -m755 ${srcdir}/build-php/modules/xsl.so ${pkgdir}${PHPENV}/usr/lib/php/modules/xsl.so
 }

@@ -55,6 +55,12 @@ post_upgrade() {
 	PHPENV_USER=root
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
 	
+	if [ $PHPENV_USER != "root" ]; then
+		ENV_DIR="/home/${PHPENV_USER}"
+	else
+		ENV_DIR="/root"
+	fi
+	
 	mv /tmp/phpenv_pkg $ENV_DIR/.phpenv
 }
 
