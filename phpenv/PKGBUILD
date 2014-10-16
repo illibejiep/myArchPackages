@@ -32,6 +32,6 @@ check() {
 }
 
 package() {
-	mkdir ${pkgdir}/tmp
+	install -d -m 1777 ${pkgdir}/tmp
 	cp -r ${srcdir}/phpenv-master ${pkgdir}/tmp/phpenv_pkg
 }

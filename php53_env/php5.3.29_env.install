@@ -13,15 +13,10 @@ pre_install() {
 post_install() {
 	echo "post_install"
 
-	PHPENV_USER=root
+	PHPENV_USER=phpenv
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
 	
-	if [ $PHPENV_USER != "root" ]; then
-		ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
-	else
-		ENV_DIR="/root/.phpenv/versions/php$PHPENV_VERSION"
-	fi
-
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
 	ENV_DIR_S=$(echo $ENV_DIR | sed 's/\//\\\//g')
 
 	cd /tmp/php${PHPENV_VERSION}_env/etc/php
@@ -66,12 +61,6 @@ post_remove() {
 	echo "post_remove"
 	PHPENV_USER=root
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
-	
-	if [ $PHPENV_USER != "root" ]; then
-		ENV_DIR="/home/${PHPENV_USER}"
-	else
-		ENV_DIR="/root"
-	fi
-
+	ENV_DIR="/home/${PHPENV_USER}"
 	rm -rf $ENV_DIR/.phpenv/versions/php$PHPENV_VERSION
 }

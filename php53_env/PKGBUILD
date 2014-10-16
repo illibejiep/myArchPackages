@@ -160,13 +160,12 @@ build() {
 	cp -a ${srcdir}/build-php ${srcdir}/build-cgi
 	cd ${srcdir}/build-cgi
 	# not on my watch
-	make clean
+	#make clean
 	./configure ${phpconfig} \
 		--disable-cli \
 		--enable-cgi \
 		${phpextensions}
-	
-	# make
+	make
 
 	# apache
 	cp -a ${srcdir}/build-php ${srcdir}/build-apache
@@ -181,7 +180,7 @@ build() {
 	# fpm
 	cp -a ${srcdir}/build-php ${srcdir}/build-fpm
 	cd ${srcdir}/build-fpm
-	make clean
+	#make clean
 	./configure ${phpconfig} \
 		--disable-cli \
 		--enable-fpm \
@@ -193,7 +192,7 @@ build() {
 	# embed
 	cp -a ${srcdir}/build-php ${srcdir}/build-embed
 	cd ${srcdir}/build-embed
-	make clean
+	#make clean
 	./configure ${phpconfig} \
 		--disable-cli \
 		--enable-embed=shared \
@@ -203,7 +202,7 @@ build() {
 	# pear
 	cp -a ${srcdir}/build-php ${srcdir}/build-pear
 	cd ${srcdir}/build-pear
-	make clean
+	#make clean
 	./configure ${phpconfig} \
 		--disable-cgi \
 		--with-readline \
