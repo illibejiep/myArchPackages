@@ -19,17 +19,26 @@ post_install() {
 	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
 	ENV_DIR_S=$(echo $ENV_DIR | sed 's/\//\\\//g')
 
-	cd /tmp/php${PHPENV_VERSION}_env/etc/php
-	
-	if [ -a php.ini ]; then
-		sed -i "s/^extension_dir *=.*/extension_dir=${ENV_DIR_S}\/usr\/lib\/php\/modules/g" php.ini
-		sed -i "s/^include_path *=.*/include_path=\".\:${ENV_DIR_S}\/usr\/share\/pear\"/g" php.ini
-	fi
+	if [ -d /tmp/php${PHPENV_VERSION}_env/etc/php ]; then
+		cd /tmp/php${PHPENV_VERSION}_env/etc/php
+		
+		if [ -a php.ini ]; then
+			sed -i "s/^extension_dir *=.*/extension_dir=${ENV_DIR_S}\/usr\/lib\/php\/modules/g" php.ini
+			sed -i "s/^include_path *=.*/include_path=\".\:${ENV_DIR_S}\/usr\/share\/pear\"/g" php.ini
+		fi
 
-	if [ -a php-fpm.conf ]; then
-		sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
-		sed -i "s/^;pid *=.*/pid=${ENV_DIR_S}\/run\/php-fpm\.pid/g" php-fpm.conf
-		sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
+		if [ -a php-fpm.conf ]; then
+			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
+			sed -i "s/^;pid *=.*/pid=${ENV_DIR_S}\/run\/php-fpm\.pid/g" php-fpm.conf
+			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
+
+			mkdir -p ../../bin
+			echo "#/bin/bash
+cd $ENV_DIR/usr/sbin
+./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@
+" > ../../bin/php-fpm
+
+		fi
 	fi
 
 	mkdir -p $ENV_DIR
@@ -48,6 +57,35 @@ pre_upgrade() {
 ## arg 2:  the old package version
 post_upgrade() {
 	echo "post_upgrade"
+	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
+
+
+	if [ -d /tmp/php${PHPENV_VERSION}_env/etc/php ]; then
+		cd /tmp/php${PHPENV_VERSION}_env/etc/php
+		
+		if [ -a php.ini ]; then
+			cp $ENV_DIR/etc/php/php.ini $ENV_DIR/etc/php/php.ini.old$(date -u +%s)
+			sed -i "s/^extension_dir *=.*/extension_dir=${ENV_DIR_S}\/usr\/lib\/php\/modules/g" php.ini
+			sed -i "s/^include_path *=.*/include_path=\".\:${ENV_DIR_S}\/usr\/share\/pear\"/g" php.ini
+		fi
+
+		if [ -a php-fpm.conf ]; then
+			cp $ENV_DIR/etc/php/php-fpm.conf $ENV_DIR/etc/php/php-fpm.conf.old$(date -u +%s)
+			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
+			sed -i "s/^;pid *=.*/pid=${ENV_DIR_S}\/run\/php-fpm\.pid/g" php-fpm.conf
+			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
+
+			mkdir -p ../../bin
+			echo "#/bin/bash
+cd $ENV_DIR/usr/sbin
+./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@
+" > ../../bin/php-fpm
+
+		fi
+	fi
+
+	cp /tmp/php${PHPENV_VERSION}_env/* $ENV_DIR
 	rm -rf /tmp/php${PHPENV_VERSION}_env
 }
 
@@ -59,8 +97,7 @@ pre_remove() {
 ## arg 1:  the old package version
 post_remove() {
 	echo "post_remove"
-	PHPENV_USER=root
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
-	ENV_DIR="/home/${PHPENV_USER}"
-	rm -rf $ENV_DIR/.phpenv/versions/php$PHPENV_VERSION
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
+	rm -rf $ENV_DIR
 }
