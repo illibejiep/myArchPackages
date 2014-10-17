@@ -13,7 +13,6 @@ pre_install() {
 post_install() {
 	echo "post_install"
 
-	PHPENV_USER=phpenv
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
 	
 	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
@@ -29,14 +28,12 @@ post_install() {
 
 		if [ -a php-fpm.conf ]; then
 			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
-			sed -i "s/^;pid *=.*/pid=${ENV_DIR_S}\/run\/php-fpm\.pid/g" php-fpm.conf
 			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
 
 			mkdir -p ../../bin
-			echo "#/bin/bash
-cd $ENV_DIR/usr/sbin
-./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@
-" > ../../bin/php-fpm
+			echo "#/bin/bash											" >  ../../bin/php-fpm
+			echo "cd $ENV_DIR/usr/sbin									" >> ../../bin/php-fpm
+			echo "./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@	" >> ../../bin/php-fpm
 
 		fi
 	fi
@@ -73,14 +70,13 @@ post_upgrade() {
 		if [ -a php-fpm.conf ]; then
 			cp $ENV_DIR/etc/php/php-fpm.conf $ENV_DIR/etc/php/php-fpm.conf.old$(date -u +%s)
 			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
-			sed -i "s/^;pid *=.*/pid=${ENV_DIR_S}\/run\/php-fpm\.pid/g" php-fpm.conf
 			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
 
 			mkdir -p ../../bin
-			echo "#/bin/bash
-cd $ENV_DIR/usr/sbin
-./php-fpm --fpm-config=../../etc/php/php-fpm.conf \$@
-" > ../../bin/php-fpm
+			echo "#/bin/bash											" >  ../../bin/php-fpm
+			echo "cd $ENV_DIR/usr/sbin									" >> ../../bin/php-fpm
+			echo "./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@	" >> ../../bin/php-fpm
+
 			chmod 755 ../../bin/php-fpm
 		fi
 	fi
