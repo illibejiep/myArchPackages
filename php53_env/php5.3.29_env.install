@@ -79,9 +79,9 @@ post_upgrade() {
 			mkdir -p ../../bin
 			echo "#/bin/bash
 cd $ENV_DIR/usr/sbin
-./php-fpm --fpm-config=../../etc/php/php-fpm.conf $@
+./php-fpm --fpm-config=../../etc/php/php-fpm.conf \$@
 " > ../../bin/php-fpm
-
+			chmod 755 ../../bin/php-fpm
 		fi
 	fi
 

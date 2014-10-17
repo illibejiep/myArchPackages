@@ -9,12 +9,16 @@ license=('GPL')
 install='phpenv.install'
 source=(
 	'https://github.com/phpenv/phpenv/archive/master.tar.gz'
+	'php-fpm_env.service'
+	'php-fpm_env'
 )
 makedepends=(
 )
 noextract=()
 md5sums=(
 	'SKIP'
+	'37005e1336905dd48e2020237f877571'
+	'07bfe526a718aa992112de9054bde6b1'
 	)
 validpgpkeys=()
 
@@ -28,10 +32,11 @@ build() {
 
 check() {
 	cd "$pkgname-$pkgver"
-#	make -k check
 }
 
 package() {
 	install -d -m 1777 ${pkgdir}/tmp
 	cp -r ${srcdir}/phpenv-master ${pkgdir}/tmp/phpenv_pkg
+	install -D -m644 ${srcdir}/php-fpm_env.service ${pkgdir}/usr/lib/systemd/system/php-fpm_env.service
+	install -D -m755 ${srcdir}/php-fpm_env ${pkgdir}/usr/bin/php-fpm_env
 }
