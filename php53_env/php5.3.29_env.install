@@ -72,6 +72,8 @@ post_upgrade() {
 
 	cp /tmp/php${PHPENV_VERSION}_env/* $ENV_DIR
 	rm -rf /tmp/php${PHPENV_VERSION}_env
+
+	su -c "phpenv rehash" $PHPENV_USER
 }
 
 ## arg 1:  the old package version
