@@ -40,6 +40,7 @@ source=(
 	'apache.conf' 
 	'freetype.patch'
 	'php-fpm'
+	'php-fpm.conf.in.patch'
 )
 md5sums=(
 	'ebfa96ea636b2a7ece71e78ad116a338'
@@ -47,8 +48,17 @@ md5sums=(
     'dec2cbaad64e3abf4f0ec70e1de4e8e9'
 	'bd375f73f6f89dcd53b8cce8015d13b3'
 	'13634a8dbc4b6f01318c80411c3a3cbc'
+	'594fddc363831767815c4ae6130bf09e'
 )
+prepare() {
+	cd ${srcdir}/${pkgbase}-${pkgver}
 
+	patch -p0 -i ${srcdir}/php.ini.patch
+	patch -p0 -i ${srcdir}/php-fpm.conf.in.patch
+
+	# freetype.h path fix
+    patch -p0 -i ${srcdir}/freetype.patch
+}
 build() {
 	phpconfig="--srcdir=../${pkgbase}-${pkgver} \
 		--prefix=$PHPENV \
@@ -139,12 +149,6 @@ build() {
 	export CPPFLAGS="${CPPFLAGS} -O2"
 
 	cd ${srcdir}/${pkgbase}-${pkgver}
-
-	# adjust paths
-	patch -p0 -i ${srcdir}/php.ini.patch
-
-	# freetype.h path fix
-    patch -p0 -i ${srcdir}/freetype.patch
 
 	# php
 	mkdir ${srcdir}/build-php
