@@ -1,0 +1,93 @@
+# This is a default template for a post-install scriptlet.
+# Uncomment only required functions and remove any functions
+# you don't need (and this header).
+
+PHPENV_VERSION=5.4.32
+
+## arg 1:  the new package version
+pre_install() {
+	echo "pre_install"
+}
+
+## arg 1:  the new package version
+post_install() {
+	echo "post_install"
+
+	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
+	
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
+	ENV_DIR_S=$(echo $ENV_DIR | sed 's/\//\\\//g')
+
+	if [ -d /tmp/php${PHPENV_VERSION}_env/etc/php ]; then
+		cd /tmp/php${PHPENV_VERSION}_env/etc/php
+		
+		if [ -a php.ini ]; then
+			sed -i "s/^extension_dir *=.*/extension_dir=${ENV_DIR_S}\/usr\/lib\/php\/modules/g" php.ini
+			sed -i "s/^include_path *=.*/include_path=\".\:${ENV_DIR_S}\/usr\/share\/pear\"/g" php.ini
+		fi
+
+		if [ -a php-fpm.conf ]; then
+			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
+			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
+		fi
+	fi
+
+	mkdir -p $ENV_DIR
+	cp -r /tmp/php${PHPENV_VERSION}_env/* $ENV_DIR
+	rm -rf /tmp/php${PHPENV_VERSION}_env
+	chown -R $PHPENV_USER:$PHPENV_USER $ENV_DIR
+
+	su -s /bin/bash -l -c "/home/${PHPENV_USER}/.phpenv/bin/phpenv rehash" $PHPENV_USER
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+	echo "pre_upgrade"
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+	echo "post_upgrade"
+	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
+
+
+	if [ -d /tmp/php${PHPENV_VERSION}_env/etc/php ]; then
+		cd /tmp/php${PHPENV_VERSION}_env/etc/php
+		
+		if [ -a php.ini ]; then
+			mv $ENV_DIR/etc/php/php.ini $ENV_DIR/etc/php/php.ini.old$(date -u +%s)
+			sed -i "s/^extension_dir *=.*/extension_dir=${ENV_DIR_S}\/usr\/lib\/php\/modules/g" php.ini
+			sed -i "s/^include_path *=.*/include_path=\".\:${ENV_DIR_S}\/usr\/share\/pear\"/g" php.ini
+		fi
+
+		if [ -a php-fpm.conf ]; then
+			mv $ENV_DIR/etc/php/php-fpm.conf $ENV_DIR/etc/php/php-fpm.conf.old$(date -u +%s)
+			sed -i "s/^;include *=.*/include=${ENV_DIR_S}\/etc\/php\/fpm\.d\/\*\.conf/g" php-fpm.conf
+			sed -i "s/^;error_log *=.*/error_log=${ENV_DIR_S}\/var\/log\/php-fpm\.log/g" php-fpm.conf
+		fi
+	fi
+
+	cp -r /tmp/php${PHPENV_VERSION}_env/* $ENV_DIR
+	rm -rf /tmp/php${PHPENV_VERSION}_env
+	chown -R $PHPENV_USER:$PHPENV_USER $ENV_DIR
+
+	su -s /bin/bash -l -c "/home/${PHPENV_USER}/.phpenv/bin/phpenv rehash" $PHPENV_USER
+}
+
+## arg 1:  the old package version
+pre_remove() {
+	echo "pre_remove"
+}
+
+## arg 1:  the old package version
+post_remove() {
+	echo "post_remove"
+	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
+	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
+	rm -rf $ENV_DIR
+
+	su -s /bin/bash -l -c "/home/${PHPENV_USER}/.phpenv/bin/phpenv rehash" $PHPENV_USER
+}
