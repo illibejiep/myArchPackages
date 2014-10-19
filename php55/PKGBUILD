@@ -147,7 +147,6 @@ build() {
 	# reuse the previous run; this will save us a lot of time
 	cp -a ${srcdir}/build-php ${srcdir}/build-cgi
 	cd ${srcdir}/build-cgi
-	make clean
 	./configure ${_phpconfig} \
 		--disable-cli \
 		--enable-cgi \
@@ -167,7 +166,6 @@ build() {
 	# fpm
 	cp -a ${srcdir}/build-php ${srcdir}/build-fpm
 	cd ${srcdir}/build-fpm
-	make clean
 	./configure ${_phpconfig} \
 		--disable-cli \
 		--enable-fpm \
@@ -179,7 +177,6 @@ build() {
 	# embed
 	cp -a ${srcdir}/build-php ${srcdir}/build-embed
 	cd ${srcdir}/build-embed
-	make clean
 	./configure ${_phpconfig} \
 		--disable-cli \
 		--enable-embed=shared \
@@ -189,7 +186,6 @@ build() {
 	# pear
 	cp -a ${srcdir}/build-php ${srcdir}/build-pear
 	cd ${srcdir}/build-pear
-	make clean
 	./configure ${_phpconfig} \
 		--disable-cgi \
 		--with-readline \
