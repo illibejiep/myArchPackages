@@ -88,4 +88,6 @@ post_remove() {
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
 	ENV_DIR="/home/${PHPENV_USER}/.phpenv/versions/php$PHPENV_VERSION"
 	rm -rf $ENV_DIR
+
+	su -s /bin/bash -l -c "/home/${PHPENV_USER}/.phpenv/bin/phpenv rehash" $PHPENV_USER
 }
