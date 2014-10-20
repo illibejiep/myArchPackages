@@ -1,5 +1,5 @@
 # $Id$
-# Maintainer: Pierre Schmitz <pierre@archlinux.de>
+# Maintainer: Vasiliy Lapin <profet@yandex.ru>
 
 pkgbase=php
 pkgname=('php'

@@ -35,8 +35,8 @@ check() {
 }
 
 package() {
-	install -d -m 1777 ${pkgdir}/tmp
-	cp -r ${srcdir}/phpenv-master ${pkgdir}/tmp/phpenv_pkg
+	install -d -m755 ${pkgdir}/usr/lib/phpenv
+	cp -r ${srcdir}/phpenv-master/* ${pkgdir}/usr/lib/phpenv/
 	install -D -m644 ${srcdir}/php-fpm_env.service ${pkgdir}/usr/lib/systemd/system/php-fpm_env.service
 	install -D -m755 ${srcdir}/php-fpm_env ${pkgdir}/usr/bin/php-fpm_env
 }

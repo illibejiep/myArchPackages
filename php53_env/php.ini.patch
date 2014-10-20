@@ -1,32 +1,14 @@
 --- php.ini-production	2011-12-15 11:31:02.000000000 +0100
 +++ php.ini-production	2012-01-11 10:43:02.069936043 +0100
-@@ -376,7 +376,7 @@
- ; or per-virtualhost web server configuration file. This directive is
- ; *NOT* affected by whether Safe Mode is turned On or Off.
- ; http://php.net/open-basedir
+@@ -376,1 +376,1 @@
 -;open_basedir =
 +open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/
- 
- ; This directive allows you to disable certain functions for security reasons.
- ; It receives a comma-delimited list of function names. This directive is
-@@ -793,7 +793,7 @@
- ;;;;;;;;;;;;;;;;;;;;;;;;;
- 
- ; UNIX: "/path1:/path2"
+@@ -793,1 +793,1 @@
 -;include_path = ".:/php/includes"
-+include_path = ".:/usr/share/pear"
- ;
- ; Windows: "\path1;\path2"
- ;include_path = ".;c:\php\includes"
-@@ -816,7 +816,7 @@
- 
- ; Directory in which the loadable extensions (modules) reside.
- ; http://php.net/extension-dir
++include_path = ".:/usr/lib/phpenv/versions/php5.3.29/usr/share/pear"
+@@ -816,1 +816,1 @@
 -; extension_dir = "./"
-+extension_dir = "/usr/lib/php/modules/"
- ; On windows:
- ; extension_dir = "ext"
- 
++extension_dir = "/usr/lib/phpenv/versions/php5.3.29/usr/lib/php/modules/"
 @@ -950,53 +950,49 @@
  ; If you only provide the name of the extension, PHP will look for it in its
  ; default extension directory.
