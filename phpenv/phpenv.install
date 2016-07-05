@@ -9,8 +9,8 @@ pre_install() {
 
 ## arg 1:  the new package version
 post_install() {
-	PHPENV_USER="phpenv"
-	echo "enter phpenv user [phpenv]:"
+	PHPENV_USER="illibejiep"
+	echo "enter phpenv user [${PHPENV_USER}]:"
 	read -r line
 	if [ $line ]; then
 		PHPENV_USER=$line
