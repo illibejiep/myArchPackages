@@ -1,28 +1,28 @@
 # Maintainer: Vasiliy Lapin <profet@yandex.ru>
 pkgname=(
-	'php55_37_env'
-	'php55_37_env-cgi'
-	'php55_37_env-apache'
-	'php55_37_env-fpm'
-	'php55_37_env-embed'
-	'php55_37_env-pear'
-	'php55_37_env-enchant'
-	'php55_37_env-gd'
-	'php55_37_env-intl'
-	'php55_37_env-ldap'
-	'php55_37_env-mcrypt'
-	'php55_37_env-mssql'
-	'php55_37_env-odbc'
-	'php55_37_env-pgsql'
-	'php55_37_env-pspell'
-	'php55_37_env-snmp'
-	'php55_37_env-sqlite'
-	'php55_37_env-tidy'
-	'php55_37_env-xsl'
+	'php55_38_env'
+	'php55_38_env-cgi'
+	'php55_38_env-apache'
+	'php55_38_env-fpm'
+	'php55_38_env-embed'
+	'php55_38_env-pear'
+	'php55_38_env-enchant'
+	'php55_38_env-gd'
+	'php55_38_env-intl'
+	'php55_38_env-ldap'
+	'php55_38_env-mcrypt'
+	'php55_38_env-mssql'
+	'php55_38_env-odbc'
+	'php55_38_env-pgsql'
+	'php55_38_env-pspell'
+	'php55_38_env-snmp'
+	'php55_38_env-sqlite'
+	'php55_38_env-tidy'
+	'php55_38_env-xsl'
 )
-pkgver=5.5.37
+pkgver=5.5.38
 pkgrel=1
-pkgdesc="PHP 5.5.37 built for phpenv"
+pkgdesc="PHP 5.5.38 built for phpenv"
 arch=('i686' 'x86_64')
 url='http://www.php.net'
 license=('PHP')
@@ -30,7 +30,7 @@ makedepends=('apache' 'imap' 'postgresql-libs' 'libldap' 'postfix' 'libvpx'
              'sqlite' 'unixodbc' 'net-snmp' 'libzip' 'enchant' 'file' 'freetds'
              'libmcrypt' 'tidyhtml' 'aspell' 'libltdl' 'libpng' 'libjpeg' 'icu'
              'curl' 'libxslt' 'openssl' 'bzip2' 'db' 'gmp' 'freetype2' 'systemd')
-install='php55_37_env.install'
+install='php55_38_env.install'
 source=(
 	"http://www.php.net/distributions/php-${pkgver}.tar.gz"
 	"http://www.php.net/distributions/php-${pkgver}.tar.gz.asc"
@@ -41,9 +41,9 @@ source=(
 )
 validpgpkeys=('0BD78B5F97500D450838F95DFE857D9A90D90EC1')
 md5sums=(
-	'6431716479805df74df27377ce485bd1'
-	'a6d2cf778f65a9785d8e4ca05871067d'
-	'4c56e1170a7e818b1c54b4dc36da0149'
+	'c2545f7164f8f8b2187fb404f11ceb35'
+	'845a4e45499d4d6ca7b4d50b19fc45d6'
+	'2bae364aa6fa5bdc5003531b472d3aa3'
 	'dec2cbaad64e3abf4f0ec70e1de4e8e9'
 	'260c888beb3c186a14404c1b346c50d3'
 	'13634a8dbc4b6f01318c80411c3a3cbc'
@@ -189,10 +189,10 @@ build() {
 		${_phpextensions}
 	make
 }
-package_php55_37_env() {
+package_php55_38_env() {
 	pkgdesc='An HTML-embedded scripting language (phpenv build)'
 	depends=('phpenv' 'pcre' 'libxml2' 'bzip2' 'curl')
-	backup=('usr/lib/phpenv/versions/php5.5.37/etc/php/php.ini')
+	backup=('usr/lib/phpenv/versions/php5.5.38/etc/php/php.ini')
 	cd ${srcdir}/build-php
 	make -j1 INSTALL_ROOT=${pkgdir} install
 	install -d -m755 ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/share/pear
@@ -206,22 +206,22 @@ package_php55_37_env() {
 	# remove empty directory
 	rm -rf ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/include/php/include
 }
-package_php55_37_env-cgi() {
+package_php55_38_env-cgi() {
 	pkgdesc='CGI and FCGI SAPI for PHP (phpenv build)'
-	depends=('php55_37_env')
+	depends=('php55_38_env')
 	install -D -m755 ${srcdir}/build-cgi/sapi/cgi/php-cgi ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/bin/php-cgi
 }
-package_php55_37_env-apache() {
+package_php55_38_env-apache() {
 	pkgdesc='Apache SAPI for PHP (phpenv build)'
-	depends=('php55_37_env' 'apache')
-	backup=('usr/lib/phpenv/versions/php5.5.37/etc/httpd/conf/extra/php5_module.conf')
+	depends=('php55_38_env' 'apache')
+	backup=('usr/lib/phpenv/versions/php5.5.38/etc/httpd/conf/extra/php5_module.conf')
 	install -D -m755 ${srcdir}/build-apache/libs/libphp5.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/httpd/modules/libphp5.so
 	install -D -m644 ${srcdir}/apache.conf ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/etc/httpd/conf/extra/php5_module.conf
 }
-package_php55_37_env-fpm() {
+package_php55_38_env-fpm() {
 	pkgdesc='FastCGI Process Manager for PHP (phpenv build)'
-	depends=('php55_37_env' 'systemd')
-	backup=('usr/lib/phpenv/versions/php5.5.37/etc/php/php-fpm.conf')
+	depends=('php55_38_env' 'systemd')
+	backup=('usr/lib/phpenv/versions/php5.5.38/etc/php/php-fpm.conf')
 	install -D -m755 ${srcdir}/php-fpm ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/bin/php-fpm
 	install -D -m755 ${srcdir}/build-fpm/sapi/fpm/php-fpm ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/sbin/php-fpm_env
 	install -D -m644 ${srcdir}/build-fpm/sapi/fpm/php-fpm.8 ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/share/man/man8/php-fpm.8
@@ -230,86 +230,86 @@ package_php55_37_env-fpm() {
 	install -d -m755 ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/var/log
 	install -d -m755 ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/run
 }
-package_php55_37_env-embed() {
+package_php55_38_env-embed() {
 	pkgdesc='Embed SAPI for PHP (phpenv build)'
-	depends=('php55_37_env')
+	depends=('php55_38_env')
 	install -D -m755 ${srcdir}/build-embed/libs/libphp5.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/libphp5.so
 	install -D -m644 ${srcdir}/php-${pkgver}/sapi/embed/php_embed.h ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/include/php/sapi/embed/php_embed.h
 }
-package_php55_37_env-pear() {
+package_php55_38_env-pear() {
 	pkgdesc='PHP Extension and Application Repository (phpenv build)'
-	depends=('php55_37_env')
-	backup=('usr/lib/phpenv/versions/php5.5.37/etc/php/pear.conf')
+	depends=('php55_38_env')
+	backup=('usr/lib/phpenv/versions/php5.5.38/etc/php/pear.conf')
 	cd ${srcdir}/build-pear
 	make install-pear INSTALL_ROOT=${pkgdir}
 	rm -rf ${pkgdir}/.{channels,depdb,depdblock,filemap,lock,registry}
 	rm -rf ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/share/pear/.{channels,depdb,depdblock,filemap,lock,registry}
 }
-package_php55_37_env-enchant() {
-	depends=('php55_37_env' 'enchant')
+package_php55_38_env-enchant() {
+	depends=('php55_38_env' 'enchant')
 	pkgdesc='enchant module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/enchant.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/enchant.so
 }
-package_php55_37_env-gd() {
-	depends=('php55_37_env' 'libpng' 'libjpeg' 'freetype2' 'libvpx')
+package_php55_38_env-gd() {
+	depends=('php55_38_env' 'libpng' 'libjpeg' 'freetype2' 'libvpx')
 	pkgdesc='gd module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/gd.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/gd.so
 }
-package_php55_37_env-intl() {
-	depends=('php55_37_env' 'icu')
+package_php55_38_env-intl() {
+	depends=('php55_38_env' 'icu')
 	pkgdesc='intl module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/intl.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/intl.so
 }
-package_php55_37_env-ldap() {
-	depends=('php55_37_env' 'libldap')
+package_php55_38_env-ldap() {
+	depends=('php55_38_env' 'libldap')
 	pkgdesc='ldap module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/ldap.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/ldap.so
 }
-package_php55_37_env-mcrypt() {
-	depends=('php55_37_env' 'libmcrypt' 'libltdl')
+package_php55_38_env-mcrypt() {
+	depends=('php55_38_env' 'libmcrypt' 'libltdl')
 	pkgdesc='mcrypt module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/mcrypt.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/mcrypt.so
 }
-package_php55_37_env-mssql() {
-	depends=('php55_37_env' 'freetds')
+package_php55_38_env-mssql() {
+	depends=('php55_38_env' 'freetds')
 	pkgdesc='mssql module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/mssql.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/mssql.so
 }
-package_php55_37_env-odbc() {
-	depends=('php55_37_env' 'unixodbc')
+package_php55_38_env-odbc() {
+	depends=('php55_38_env' 'unixodbc')
 	pkgdesc='ODBC modules for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/odbc.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/odbc.so
 	install -D -m755 ${srcdir}/build-php/modules/pdo_odbc.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/pdo_odbc.so
 }
-package_php55_37_env-pgsql() {
-	depends=('php55_37_env' 'postgresql-libs')
+package_php55_38_env-pgsql() {
+	depends=('php55_38_env' 'postgresql-libs')
 	pkgdesc='PostgreSQL modules for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/pgsql.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/pgsql.so
 	install -D -m755 ${srcdir}/build-php/modules/pdo_pgsql.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/pdo_pgsql.so
 }
-package_php55_37_env-pspell() {
-	depends=('php55_37_env' 'aspell')
+package_php55_38_env-pspell() {
+	depends=('php55_38_env' 'aspell')
 	pkgdesc='pspell module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/pspell.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/pspell.so
 }
-package_php55_37_env-snmp() {
-	depends=('php55_37_env' 'net-snmp')
+package_php55_38_env-snmp() {
+	depends=('php55_38_env' 'net-snmp')
 	pkgdesc='snmp module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/snmp.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/snmp.so
 }
-package_php55_37_env-sqlite() {
-	depends=('php55_37_env' 'sqlite')
+package_php55_38_env-sqlite() {
+	depends=('php55_38_env' 'sqlite')
 	pkgdesc='sqlite module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/sqlite3.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/sqlite3.so
 	install -D -m755 ${srcdir}/build-php/modules/pdo_sqlite.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/pdo_sqlite.so
 }
-package_php55_37_env-tidy() {
-	depends=('php55_37_env' 'tidyhtml')
+package_php55_38_env-tidy() {
+	depends=('php55_38_env' 'tidyhtml')
 	pkgdesc='tidy module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/tidy.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/tidy.so
 }
-package_php55_37_env-xsl() {
-	depends=('php55_37_env' 'libxslt')
+package_php55_38_env-xsl() {
+	depends=('php55_38_env' 'libxslt')
 	pkgdesc='xsl module for PHP (phpenv build)'
 	install -D -m755 ${srcdir}/build-php/modules/xsl.so ${pkgdir}/usr/lib/phpenv/versions/php${pkgver}/usr/lib/php/modules/xsl.so
 }

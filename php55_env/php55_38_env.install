@@ -1,4 +1,4 @@
-PHPENV_VERSION=5.5.37
+PHPENV_VERSION=5.5.38
 
 post_install() {
 	export $(grep -o -P 'PHPENV_USER=(.*)' /etc/environment)
